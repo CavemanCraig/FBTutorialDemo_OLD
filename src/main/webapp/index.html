@@ -165,19 +165,28 @@
             return null;
      	}
 
-       	if(isLocal)
+      	if(isLocal)
         {
+			/**** Update to "false" to test alert for not enough friends or
+				  Update to "true" to test the link to the game and play ****/
+			var hasEnoughFriends = true;
+            var localFBID = 36985;
+            var POSTPlayerURL = "webService/PlayerRequest/" + localFBID + "/Craig Schwarzwald";
 
-         	var localFBID = 36985;
-            var POSTPlayerURL = "rest/webService/PlayerRequest/" + localFBID + "/Craig Schwarzwald";
-            friendIDList = [5,6,7];
-            friendNameList = ["bob", "joe", "mary"];
-
-            var JSONInput = array2dToJson(friendIDList, friendNameList, "newArray");
-            if(isDEBUG){alert("JSON Input: " + JSONInput);}
-            doPOSTPlayer(POSTPlayerURL, JSONInput);
-            doGETPlayer(localFBID);
-      	}
+			doPOSTUser(localFBID, "Craig Schwarzwald");
+            doGETUser(localFBID);
+			if(hasEnoughFriends){
+                friendIDList = [5,6,7,8,9,10];
+                friendNameList = ["bob", "joe", "mary", "john", "jane", "lisa"];
+			} else{
+                friendIDList = [5,6,7];
+                friendNameList = ["bob", "joe", "mary"];
+			}
+               var JSONInput = array2dToJson(friendIDList, friendNameList, "newArray");
+               if(isDEBUG){alert("JSON Input: " + JSONInput);}
+               doPOSTPlayer(POSTPlayerURL, JSONInput);
+               doGETPlayer(localFBID);
+           }
 
 
           
@@ -212,8 +221,11 @@
                               	", imageURL=" + myObj.PlayerInfo.imageURL + ", Points=" + myObj.points);
                       	}
                      	document.getElementById('myPoints').innerHTML = myObj.points;
-                 	}
-                   	else {
+						document.getElementById('PlayerID').innerHTML = myObj.playerInfo.facebookID;
+						document.links['linkToGame'].href = myObj.gameLink.href;
+						document.getElementById("linkToGame").onclick = eval(myObj.gameLink.onClickMethod);
+                   	}
+                    else {
                     	if(isDEBUG){alert("GET Fail - status: " + xmlhttp.status + " - " + xmlhttp.responseText);}
                     }
             	} else {
@@ -295,7 +307,9 @@
       <H1>Welcome to Tutorial Demo</H1><P /><BR />
       <a href='myInfo.html'>Get Your Info Here</a><BR />
       <a href='friendsInfo.html'>Get Your Friends Info Here</a><P />
+	  <a href="#top" id='linkToGame'>Click Here to play the game</a>
       <div id='current_points'>Current point total is: </div><div id='myPoints'></div>
+	  <div id='PlayerID' style='display:none'></div>
       </center>
       
 </body>
